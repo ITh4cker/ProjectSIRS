@@ -12,6 +12,9 @@
 #python specific
 *.pyc
 
+#idea
+.idea/
+
 #eclipse
 .classpath
 .project
@@ -19,3 +22,4 @@
 
 #build folder
 bin/
+out/
