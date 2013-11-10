@@ -18,10 +18,10 @@ public class ToStudent extends Sender {
     public boolean send(List<Container> c) {
         try {
             for (Container container : c) {
-                file.write(container.accept(new XMLPrinter()));
+                this.file.write(container.accept(new XMLPrinter()));
             }
-            file.flush();
-            file.close();
+            this.file.flush();
+            this.file.close();
         } catch (IOException e) {
             e.printStackTrace();
             return false;

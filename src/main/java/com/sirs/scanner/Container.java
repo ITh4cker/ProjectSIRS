@@ -1,9 +1,14 @@
 package com.sirs.scanner;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Container {
+public class Container implements Serializable {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 331462851695387988L;
     private List<Resource> resources = new ArrayList<Resource>();
     private String name;
 
@@ -23,19 +28,19 @@ public class Container {
         }
     }
 
-    public List<Resource> getResources() {
-        return this.resources;
-    }
-
-    public String getName() {
-        return name;
+    public String accept(Printer p) {
+        return p.print(this);
     }
 
     public void addResource(Resource r) {
         this.resources.add(r);
     }
 
-    public String accept(Printer p) {
-        return p.print(this);
+    public String getName() {
+        return this.name;
+    }
+
+    public List<Resource> getResources() {
+        return this.resources;
     }
 }

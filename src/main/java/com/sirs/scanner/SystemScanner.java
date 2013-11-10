@@ -16,31 +16,6 @@ public class SystemScanner {
     private static ScannerManager scanner = null;
     private static Sender sender = null;
 
-    public static void main(String[] args) {
-        System.out.println("Starting Scanner...");
-        try {
-            init(args);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-            return;
-        }
-        System.out.println("Scanner initialized");
-        for (int times = 0; times != timesToScan; times++) {
-            System.out.print("Scan #" + times + ": ");
-            final List<Container> processes = getSystemActivity();
-            System.out.println("scanned " + processes.size() + " elements");
-            sender.send(processes);
-
-            try {
-                Thread.sleep(WAIT_TIME_BETWEEN_SCANS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return;
-            }
-        }
-        System.out.println("Scanner terminated");
-    }
-
     private static List<Container> getSystemActivity() {
         return scanner.scan();
     }
@@ -63,6 +38,33 @@ public class SystemScanner {
         }
 
         scanner = new ScannerManager(new DefaultScanner(), new SIGARScanner());
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Starting Scanner...");
+        try {
+            init(args);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            return;
+        }
+        System.out.println("Scanner initialized");
+        for (int times = 0; times != timesToScan; times++) {
+            System.out.print("Scan #" + times + ": ");
+            final List<Container> processes = getSystemActivity();
+            System.out.println("scanned " + processes.size() + " elements");
+            sender.send(processes);
+
+            if (timesToScan < 0) {
+                try {
+                    Thread.sleep(WAIT_TIME_BETWEEN_SCANS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return;
+                }
+            }
+        }
+        System.out.println("Scanner terminated");
     }
 
 }
