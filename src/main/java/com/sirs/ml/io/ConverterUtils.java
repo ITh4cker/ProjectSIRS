@@ -6,7 +6,7 @@ import com.sirs.ml.Function;
 import com.sirs.ml.Variable;
 
 public class ConverterUtils {
-    private static final String TRAIN_DATA_FILE = "train-data.tmp";
+    private static final String TRAIN_DATA_FILE = "train-data.csv";
 
     /**
      * Creates a CSV file with the data needed to apply a function
