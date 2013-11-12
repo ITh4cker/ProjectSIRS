@@ -2,7 +2,9 @@ package com.sirs.scanner;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Container implements Serializable {
     /**
@@ -10,6 +12,7 @@ public class Container implements Serializable {
      */
     private static final long serialVersionUID = 331462851695387988L;
     private List<Resource> resources = new ArrayList<Resource>();
+    private Map<String, String> otherInformation = new HashMap<String, String>();
     private String name;
 
     public Container(String name) {
@@ -32,8 +35,16 @@ public class Container implements Serializable {
         return p.print(this);
     }
 
+    public void addExtraInfo(String key, String value) {
+        this.otherInformation.put(key, value);
+    }
+
     public void addResource(Resource r) {
         this.resources.add(r);
+    }
+
+    public String getExtraInfo(String key) {
+        return this.otherInformation.get(key);
     }
 
     public String getName() {
