@@ -6,14 +6,14 @@ import java.util.List;
 public class ScannerManager implements Scanner {
     private List<SingleScanner> scanners = new ArrayList<SingleScanner>();
 
+    public ScannerManager(List<SingleScanner> scanners) {
+        this.scanners.addAll(scanners);
+    }
+
     public ScannerManager(SingleScanner... scanners) {
         for (SingleScanner singleScanner : scanners) {
             this.scanners.add(singleScanner);
         }
-    }
-
-    public ScannerManager(List<SingleScanner> scanners) {
-        this.scanners.addAll(scanners);
     }
 
     @Override

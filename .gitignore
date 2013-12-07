@@ -7,7 +7,6 @@
 
 #java specific
 *.class
-*.jar
 
 #python specific
 *.pyc
