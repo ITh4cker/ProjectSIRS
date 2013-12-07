@@ -3,6 +3,7 @@ package com.sirs.scanner;
 import java.io.IOException;
 import java.util.List;
 
+import com.sirs.scanner.communication.ARFFPrinter;
 import com.sirs.scanner.communication.CSVPrinter;
 import com.sirs.scanner.communication.Sender;
 import com.sirs.scanner.communication.ToAnalyser;
@@ -14,6 +15,7 @@ public class SystemScanner {
     private static final String ANALYSER_MODE = "ANALYSER";
     private static final int WAIT_TIME_BETWEEN_SCANS = 5000; //Time in milliseconds.
     private static final String XML_FLAG = "-xml";
+    private static final String ARFF_FLAG = "-arff";
     private static int timesToScan = -1; //negative values means infinite times to scan
 
     private static ScannerManager scanner = null;
@@ -27,6 +29,7 @@ public class SystemScanner {
         boolean correctArgs = false;
         boolean student = false;
         boolean xml = false;
+        boolean arff = false;
         boolean csv = true;
         for (String string : args) {
             if (string.equals(ANALYSER_MODE)) {
@@ -40,18 +43,26 @@ public class SystemScanner {
             } else if (string.equals(XML_FLAG)) {
                 xml = true;
                 csv = false;
+                arff = false;
+            } else if (string.equals(ARFF_FLAG)) {
+                xml = false;
+                csv = false;
+                arff = true;
             }
         }
         if (student && csv) {
             sender = new ToStudent("test-file.csv", new CSVPrinter());
         } else if (student && xml) {
             sender = new ToStudent("test-file.txt", new XMLPrinter());
+        } else if (student && arff) {
+            sender = new ToStudent("test-file.arff", new ARFFPrinter("VirusA", "VirusB", "java"));
         }
 
         if (!correctArgs || sender == null) {
             throw new RuntimeException("Invalid Arguments");
         }
         scanner = new ScannerManager(new SIGARScanner("knownProcesses.txt"));
+//        scanner = new ScannerManager(new DefaultScanner());
     }
 
     public static void main(String[] args) {

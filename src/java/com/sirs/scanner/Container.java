@@ -11,9 +11,9 @@ public class Container implements Serializable {
      *
      */
     private static final long serialVersionUID = 331462851695387988L;
-    private List<Resource> resources = new ArrayList<Resource>();
-    private Map<String, String> otherInformation = new HashMap<String, String>();
-    private String name;
+    private final List<Resource> resources = new ArrayList<Resource>();
+    private final Map<String, String> otherInformation = new HashMap<String, String>();
+    private final String name;
 
     public Container(String name) {
         this.name = name;

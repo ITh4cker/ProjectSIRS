@@ -3,15 +3,15 @@ package com.sirs.scanner;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sirs.scanner.commands.HardcoreScan;
+
 public class DefaultScanner extends SingleScanner {
 
     @Override
     public List<Container> scan() {
         List<Container> lst = new ArrayList<Container>();
-        Container c = new Container("wazaaaaaaaaa.exe");
-        c.addResource(new Resource("CPU", "80"));
-        c.addResource(new Resource("RAM", "1283M"));
-        lst.add(c);
+        String out = (new HardcoreScan()).getAllProcessesCPU();
+        System.out.println(out);
         return lst;
     }
 

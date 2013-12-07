@@ -16,7 +16,7 @@ public class XMLPrinter extends Printer {
         result += ">\n";
 
         for (Resource res : c.getResources()) {
-            result += "\t<resource type=\"" + res.getType() + "\">" + res.getValue() + "</resource>\n";
+            result += "\t<resource type=\"" + res.getHeader() + "\">" + res.getValue() + "</resource>\n";
         }
         result += "</container>\n";
         return result;

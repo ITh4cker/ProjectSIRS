@@ -20,7 +20,7 @@ public class CSVPrinter extends Printer {
     public String printHeader(Container c) {
         String result = "";
         for (Resource res : c.getResources()) {
-            result += res.getType() + ";";
+            result += res.getHeader() + ";";
         }
         result += "\n";
         return result;

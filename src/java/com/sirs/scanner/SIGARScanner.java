@@ -5,8 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.hyperic.sigar.NetConnection;
@@ -17,10 +19,15 @@ import org.hyperic.sigar.SigarException;
 import org.hyperic.sigar.SigarProxy;
 import org.hyperic.sigar.SigarProxyCache;
 
+import com.sirs.scanner.commands.HardcoreScan;
+
 public class SIGARScanner extends SingleScanner {
     private static final int SLEEP_TIME = 1000 * 5;
     private final SigarProxy sigar;
+    private final HardcoreScan hardcore = new HardcoreScan();
     private final Set<String> knownProcesses;
+    private Map<Long, Double> procCPU = new HashMap<Long, Double>();
+    private Set<Long> processesUsingWebcam = new HashSet<Long>();
 
     @Deprecated
     public SIGARScanner() {
@@ -113,33 +120,79 @@ public class SIGARScanner extends SingleScanner {
         return false;
     }
 
-    //TODO implement this function
     private boolean isUsingWebcam(long pid) {
-        return false;
+        return this.processesUsingWebcam.contains(pid);
     }
 
-    /* 
-     * get all processes running
-     * for each process do:
-     *      -> get % cpu
-     *      -> get % mem
-     *      -> get process state
-     *      -> is Running in Root? x
-     *      -> is known process? o
-     *      -> is using webcam? o
-     *      -> is using internet x
-     *      -> is listening to the keyboard and/or mouse o
+    private void load() {
+        String fetch;
+        java.util.Scanner in;
+        java.util.Scanner line;
+
+        // cpu usage per process
+        this.procCPU.clear();
+        fetch = this.hardcore.getAllProcessesCPU();
+        if (fetch != null) {
+            in = new java.util.Scanner(fetch);
+            in.nextLine();
+            while (in.hasNext()) {
+                line = new java.util.Scanner(in.nextLine());
+                try {
+                    this.procCPU.put(line.nextLong(), line.nextDouble());
+                    line.close();
+                } catch (Exception e) {
+                    line.close();
+                    e.printStackTrace();
+                    break;
+                }
+            }
+            in.close();
+        }
+
+        // processes using webcam
+        this.processesUsingWebcam.clear();
+        fetch = this.hardcore.getWebcamUsage();
+        if (fetch != null) {
+            in = new java.util.Scanner(fetch);
+            while (in.hasNext()) {
+                try {
+                    this.processesUsingWebcam.add(in.nextLong());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+            in.close();
+        }
+    }
+
+    /**
+     * get all processes running<br>
+     * for each process do:<br>
+     * &nbsp;-> get % cpu<br>
+     * &nbsp;-> get % mem<br>
+     * &nbsp;-> get process state<br>
+     * &nbsp;-> is Running in Root? x<br>
+     * &nbsp;-> is known process? o<br>
+     * &nbsp;-> is using webcam? o<br>
+     * &nbsp;-> is using internet x<br>
+     * &nbsp;-> is listening to the keyboard and/or mouse o<br>
+     * 
+     * @return returns a list of processes (container) each one with a list of resources being used
      */
     @Override
     public List<Container> scan() {
         List<Container> result = new ArrayList<Container>();
 
-        long[] pids = this.getPids();
+        //load my system scan
+        load();
+
+        long[] pids = getPids();
         for (long pid : pids) {
             try {
                 Container c = new Container("" + pid);
                 c.addExtraInfo("Name", this.sigar.getProcState(pid).getName());
-                c.addExtraInfo("USER", this.sigar.getProcCredName(pid).getUser());
+//                c.addExtraInfo("USER", this.sigar.getProcCredName(pid).getUser());
 //                c.addExtraInfo("EXE Name", this.sigar.getProcExe(pid).getName());
 //                c.addExtraInfo("EXE CWD", this.sigar.getProcExe(pid).getCwd());
                 c.addExtraInfo("Description", ProcUtil.getDescription(this.sigar, pid));
@@ -153,24 +206,31 @@ public class SIGARScanner extends SingleScanner {
                 c.addResource(new Resource("State", this.sigar.getProcState(pid).getState()));
 
                 //CPU
-                c.addResource(new Resource("CPU_%", this.sigar.getProcCpu(pid).getPercent()));
+                c.addResource(new Resource("CPU_usage", this.procCPU.get(pid)));
+                c.addResource(new Resource("CPU_idle", this.sigar.getCpuPerc().getIdle() * 100));
+
+                //TIME
+                c.addResource(new Resource("TIME_total", this.sigar.getProcTime(pid).getTotal()));
+                c.addResource(new Resource("TIME_user", this.sigar.getProcTime(pid).getUser()));
+                c.addResource(new Resource("TIME_sys", this.sigar.getProcTime(pid).getSys()));
 
                 //MEM
                 c.addResource(new Resource("MEM_Size", this.sigar.getProcMem(pid).getSize()));
                 c.addResource(new Resource("MEM_Resident", this.sigar.getProcMem(pid).getResident()));
                 c.addResource(new Resource("MEM_Share", this.sigar.getProcMem(pid).getShare()));
+                c.addResource(new Resource("MEM_Available", this.sigar.getMem().getActualFree()));
+                c.addResource(new Resource("MEM_Used", this.sigar.getMem().getActualUsed()));
 
                 //booleans
-                c.addResource(new Resource("Root?", this.isRunningAsRoot(pid)));
-                c.addResource(new Resource("Known?", this.isKnownProcess(pid)));
-                c.addResource(new Resource("Webcam?", this.isUsingWebcam(pid)));
-                c.addResource(new Resource("Internet?", this.isUsingInternet(pid, this.getProcessesUsingInternet())));
-                c.addResource(new Resource("Listening?", this.isListeningToKeyboard(pid)));
+                c.addResource(new Resource("Root?", isRunningAsRoot(pid)));
+                c.addResource(new Resource("Known?", isKnownProcess(pid)));
+                c.addResource(new Resource("Webcam?", isUsingWebcam(pid)));
+                c.addResource(new Resource("Internet?", isUsingInternet(pid, getProcessesUsingInternet())));
+                c.addResource(new Resource("Listening?", isListeningToKeyboard(pid)));
 
                 //Add Container to result
                 result.add(c);
             } catch (SigarException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

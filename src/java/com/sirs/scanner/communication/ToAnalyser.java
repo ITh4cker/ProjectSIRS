@@ -12,7 +12,7 @@ public class ToAnalyser extends Sender {
     private Socket clientSocket = null;
 
     public ToAnalyser() throws UnknownHostException, IOException {
-        this("localhost", 10000);
+        this("localhost", 12000);
     }
 
     public ToAnalyser(String host, int port) throws UnknownHostException, IOException {
