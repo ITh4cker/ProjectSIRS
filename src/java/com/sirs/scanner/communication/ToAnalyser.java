@@ -30,4 +30,16 @@ public class ToAnalyser extends Sender {
         }
         return true;
     }
+
+	@Override
+	public void close() {
+		if(clientSocket != null){
+			try {
+				clientSocket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}		
+	}
 }

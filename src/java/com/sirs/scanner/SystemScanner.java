@@ -37,7 +37,7 @@ public class SystemScanner {
                 correctArgs = true;
                 sender = new ToAnalyser();
             } else if (string.equals(STUDENT_MODE)) {
-                timesToScan = 1;
+                timesToScan = 5;
                 correctArgs = true;
                 student = true;
             } else if (string.equals(XML_FLAG)) {
@@ -89,6 +89,7 @@ public class SystemScanner {
                 }
             }
         }
+        sender.close();
         System.out.println("Scanner terminated");
     }
 

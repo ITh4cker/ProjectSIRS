@@ -32,11 +32,20 @@ public class ToStudent extends Sender {
                 this.file.write(container.accept(this.printer));
             }
             this.file.flush();
-            this.file.close();
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
         return true;
     }
+
+	@Override
+	public void close() {
+		try {
+			file.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
 }

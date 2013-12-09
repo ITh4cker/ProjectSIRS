@@ -23,8 +23,8 @@ public class Resource implements Serializable {
 
     public Resource(String type, char value) {
         this(type);
-        this.value = Character.toString(value);
-        this.valueType = "STRING";
+        this.value = Integer.toString((int) value);
+        this.valueType = "NUMERIC";
     }
 
     public Resource(String type, double value) {

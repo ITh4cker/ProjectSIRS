@@ -6,4 +6,5 @@ import com.sirs.scanner.Container;
 
 public abstract class Sender {
     public abstract boolean send(List<Container> c);
+    public abstract void close();
 }
