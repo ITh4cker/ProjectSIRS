@@ -61,6 +61,7 @@ public class SystemScanner {
         if (!correctArgs || sender == null) {
             throw new RuntimeException("Invalid Arguments");
         }
+
         scanner = new ScannerManager(new SIGARScanner("knownProcesses.txt"));
 //        scanner = new ScannerManager(new DefaultScanner());
     }

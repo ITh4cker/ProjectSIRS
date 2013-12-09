@@ -20,4 +20,4 @@ library:
 	$(CC) -shared -Wl,-soname,$(LOUT).1 -o $(LDIR)/$(LOUT) $(ODIR)/$(CFILE).o
 
 clean:
-	rm -rf $(LDIR)/$(LOUT) $(ODIR)/$(CFILE).o $(GDIR)
+	rm -rf $(LDIR)/$(LOUT) $(ODIR)/$(CFILE).o

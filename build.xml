@@ -1,7 +1,8 @@
 <project name="ProjectSIRS" default="build" basedir=".">
 
   <!-- set global properties for this build -->
-  <property name="src-java" value="src/java"/>
+  <property name="src" value="src"/>
+  <property name="src-java" value="${src}/java"/>
   <property name="lib" value="lib" />
   <property name="build" value="build"/>
   <property name="run-class" value="com.sirs.scanner.SystemScanner"/>
@@ -13,6 +14,7 @@
       <include name="*.jar"/>
     </fileset>
     <pathelement location="${build}/classes"/>
+    <pathelement location="${build}/resources"/>
   </path>
 
 
@@ -24,11 +26,13 @@
   <target name="init_compile" depends="init_all">
     <!-- Create the build directory structure used by compile -->
     <mkdir dir="${build}/classes"/>
+    <mkdir dir="${build}/resources"/>
   </target>
 
 <target name="build" depends="compile-java,build-lib"/>
 <target name="build-fast" depends="compile-java"/>
 <target name="build-full" depends="compile-java,build-lib-full"/>
+
 <target name="compile-java" depends="init_compile" 
    description="Compile project">
     <javac includeantruntime="false" 
@@ -42,6 +46,11 @@
 
       <classpath refid="project.class.path" /> 
     </javac>
+    <copy todir="${build}/resources" >
+       <fileset dir="${src}/resources">
+         <include name="*.*"/>
+       </fileset>
+    </copy>
   </target>
 
   <target name="build-lib-full" depends="compile-java">
@@ -72,7 +81,10 @@
 
 <!-- Clean -->
   <target name="clean" depends="init_all"
-   description="Removes the build, dist and reports directories">
+   description="Removes the build and generated lib">
+    <exec executable="make" failonerror="true">
+      <arg line="clean"/>
+    </exec>
     <delete dir="${build}"/>
   </target>
 </project>

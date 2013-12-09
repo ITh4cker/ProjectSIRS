@@ -1,9 +1,11 @@
 package com.sirs.scanner;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,16 +31,13 @@ public class SIGARScanner extends SingleScanner {
     private Map<Long, Double> procCPU = new HashMap<Long, Double>();
     private Set<Long> processesUsingWebcam = new HashSet<Long>();
 
-    @Deprecated
-    public SIGARScanner() {
-        this("knownProcesses.txt");
-    }
-
     public SIGARScanner(String knownProcessesFile) {
         this.sigar = SigarProxyCache.newInstance(new Sigar(), SLEEP_TIME);
         Set<String> procs = new HashSet<String>();
         try {
-            BufferedReader file = new BufferedReader(new FileReader(knownProcessesFile));
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            URL url = classLoader.getResource(knownProcessesFile);
+            BufferedReader file = new BufferedReader(new FileReader(new File(url.getFile())));
             String line;
             while ((line = file.readLine()) != null) {
                 procs.add(line);
