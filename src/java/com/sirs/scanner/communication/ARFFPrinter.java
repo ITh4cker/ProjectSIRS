@@ -42,10 +42,7 @@ public class ARFFPrinter extends Printer {
         for (Resource resource : c.getResources()) {
             header += String.format("@ATTRIBUTE %s %s\n", resource.getHeader(), resource.getValueType());
         }
-
-        if (isLearningMode()) {
-            header += "@ATTRIBUTE class {true,false}\n";
-        }
+        header += "@ATTRIBUTE class {true,false}\n";
         header += "\n@DATA\n";
 
         return header;
@@ -74,11 +71,8 @@ public class ARFFPrinter extends Printer {
         for (Resource resource : c.getResources()) {
             slot += resource.getValue() + ",";
         }
-        if (isLearningMode()) {
-            slot += isVirus(c);
-        } else {
-            slot = slot.substring(0, slot.length() - 1); //remove last comma
-        }
+        slot += isVirus(c);
+
         return slot + "\n";
     }
 }

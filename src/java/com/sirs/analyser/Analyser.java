@@ -29,16 +29,20 @@ public class Analyser {
 		String instance ="";
 		List<Integer> instancesWithVirus = new ArrayList<Integer>();
 		try {
-			reader.setLineNumber(5);
+			reader.readLine();
+			reader.readLine();
+			reader.readLine();
+			reader.readLine();
+			reader.readLine();
 			
 			instance = reader.readLine();
 			while(instance != null) {
-				String[] instanceValues = instance.split(" ");
-				System.out.println("Tamanho da linha de uma instancia "+ instanceValues.length);
-				String predicted = instanceValues[2].split(":")[1];
-				System.out.println("predicted = " + predicted);
+				String[] instanceValues = instance.split("\\s+");
+//				System.out.println("Tamanho da linha de uma instancia "+ instanceValues.length);
+				String predicted = instanceValues[3].split(":")[1];
+//				System.out.println("predicted = " + predicted);
 				if(predicted.equals("true")) {
-					instancesWithVirus.add(Integer.parseInt(instanceValues[0]));
+					instancesWithVirus.add(Integer.parseInt(instanceValues[1]));
 				}
 				instance = reader.readLine();
 			}

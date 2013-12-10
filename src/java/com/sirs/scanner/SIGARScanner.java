@@ -232,6 +232,8 @@ public class SIGARScanner extends SingleScanner {
                 result.add(c);
             } catch (SigarException e) {
                 e.printStackTrace();
+            } catch (Exception e){
+            	e.printStackTrace();
             }
         }
 

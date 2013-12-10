@@ -5,7 +5,8 @@
   <property name="src-java" value="${src}/java"/>
   <property name="lib" value="lib" />
   <property name="build" value="build"/>
-  <property name="run-class" value="com.sirs.scanner.SystemScanner"/>
+  <property name="scanner-run-class" value="com.sirs.scanner.SystemScanner"/>
+  <property name="analyser-run-class" value="com.sirs.analyser.SystemAnalyser"/>
 
   <!-- general classpath definition, incl. CLASSPATH env. variable,
    // but jars in lib directory have precedence over the CLASSPATH variable -->
@@ -42,7 +43,7 @@
       optimize="${optimization}"
       debug="${debug}"
       deprecation="${deprecation}"
-      source="1.7" target="1.7">
+      source="1.6" target="1.6">
 
       <classpath refid="project.class.path" /> 
     </javac>
@@ -64,7 +65,7 @@
 
 <!-- Run -->
   <target name="run-student" depends="build">
-    <java classname="${run-class}" fork="true">
+    <java classname="${scanner-run-class}" fork="true">
       <classpath refid="project.class.path"/>
       <sysproperty key="java.library.path" path="${lib}"/>
       <arg line="-arff STUDENT"/>
@@ -72,7 +73,13 @@
   </target>
 
   <target name="run-analyser" depends="build">
-    <java classname="${run-class}" fork="true">
+    <java classname="${analyser-run-class}" fork="true">
+      <classpath refid="project.class.path"/>
+    </java>
+  </target>
+
+  <target name="run-scanner" depends="build">
+    <java classname="${scanner-run-class}" fork="true">
       <classpath refid="project.class.path"/>
       <sysproperty key="java.library.path" path="${lib}"/>
       <arg line="ANALYSER"/>
