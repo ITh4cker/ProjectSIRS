@@ -60,5 +60,7 @@ public class Listener {
 		}
 	}
 	
-	
+	public void registerAnalyser(Analyser analyser) {
+		this.analyser = analyser;
+	}
 }
