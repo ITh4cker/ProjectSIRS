@@ -19,7 +19,7 @@ JNIEXPORT jstring JNICALL Java_com_sirs_scanner_commands_HardcoreScan_getAllProc
 	char buff[BUFF_SIZE];
 
 	/* Open the command for reading. */
-	fp = popen("ps -eo \"%p %C\"", "r");
+	fp = popen("ps -eo \"%p %C\" 2> /dev/null", "r");
 	if (fp == NULL) {
 		fprintf(stderr, "Failed to run command\n" );
 		return NULL;
@@ -50,7 +50,7 @@ JNIEXPORT jstring JNICALL Java_com_sirs_scanner_commands_HardcoreScan_getWebcamU
 	char buff[BUFF_SIZE];
 
 	/* Open the command for reading. */
-	fp = popen("lsof -F p /dev/video0", "r");
+	fp = popen("lsof -F p /dev/video0 2> /dev/null", "r");
 	if (fp == NULL) {
 		fprintf(stderr, "Failed to run command\n" );
 		return NULL;

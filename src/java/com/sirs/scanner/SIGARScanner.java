@@ -191,6 +191,7 @@ public class SIGARScanner extends SingleScanner {
             try {
                 Container c = new Container("" + pid);
                 c.addExtraInfo("Name", this.sigar.getProcState(pid).getName());
+                c.addExtraInfo("Pid", Long.toString(pid));
 //                c.addExtraInfo("USER", this.sigar.getProcCredName(pid).getUser());
 //                c.addExtraInfo("EXE Name", this.sigar.getProcExe(pid).getName());
 //                c.addExtraInfo("EXE CWD", this.sigar.getProcExe(pid).getCwd());

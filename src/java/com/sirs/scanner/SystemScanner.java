@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import com.sirs.scanner.communication.ARFFPrinter;
-import com.sirs.scanner.communication.CSVPrinter;
 import com.sirs.scanner.communication.Sender;
 import com.sirs.scanner.communication.ToAnalyser;
 import com.sirs.scanner.communication.ToStudent;
@@ -29,8 +28,7 @@ public class SystemScanner {
         boolean correctArgs = false;
         boolean student = false;
         boolean xml = false;
-        boolean arff = false;
-        boolean csv = true;
+        boolean arff = true;
         for (String string : args) {
             if (string.equals(ANALYSER_MODE)) {
                 timesToScan = -1;
@@ -42,17 +40,13 @@ public class SystemScanner {
                 student = true;
             } else if (string.equals(XML_FLAG)) {
                 xml = true;
-                csv = false;
                 arff = false;
             } else if (string.equals(ARFF_FLAG)) {
                 xml = false;
-                csv = false;
                 arff = true;
             }
         }
-        if (student && csv) {
-            sender = new ToStudent("test-file.csv", new CSVPrinter());
-        } else if (student && xml) {
+        if (student && xml) {
             sender = new ToStudent("test-file.txt", new XMLPrinter());
         } else if (student && arff) {
             sender = new ToStudent("test-file.arff", new ARFFPrinter("VirusA", "VirusB", "java"));
@@ -80,14 +74,11 @@ public class SystemScanner {
             final List<Container> processes = getSystemActivity();
             System.out.println("scanned " + processes.size() + " elements");
             sender.send(processes);
-
-            if (timesToScan < 0) {
-                try {
-                    Thread.sleep(WAIT_TIME_BETWEEN_SCANS);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    return;
-                }
+             try {
+                Thread.sleep(WAIT_TIME_BETWEEN_SCANS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return;
             }
         }
         sender.close();
