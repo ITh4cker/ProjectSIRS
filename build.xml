@@ -7,6 +7,8 @@
   <property name="build" value="build"/>
   <property name="scanner-run-class" value="com.sirs.scanner.SystemScanner"/>
   <property name="analyser-run-class" value="com.sirs.analyser.SystemAnalyser"/>
+  <property name="classifier" value="weka.classifiers.functions.Logistic"/>
+  <property name="model-file" value="logistic.model" />
 
   <!-- general classpath definition, incl. CLASSPATH env. variable,
    // but jars in lib directory have precedence over the CLASSPATH variable -->
@@ -95,5 +97,12 @@
       <arg line="clean"/>
     </exec>
     <delete dir="${build}"/>
+  </target>
+
+  <target name="create-model">
+  	<java classname="${classifier}" fork="true">
+  		<classpath refid="project.class.path"/>
+  		<arg line="-t ${src}/resources/base-learn.arff -d ${src}/resources/${model-file}" />
+  	</java>
   </target>
 </project>
