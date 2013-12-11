@@ -7,8 +7,21 @@ import javax.imageio.ImageIO;
 import uk.co.caprica.vlcj.binding.internal.libvlc_state_t;
 
 public class WebcamVirus {
+	// Sleep time in miliseconds
 	private static final int TIME_SLEEP = 3*1000;
+
+	/**
+	 * args[0] = webcam path
+	 */
 	public static void main(String[] args) throws Exception {
+		String webcamPath = null;
+		if (args.length < 1) {
+			System.out.println("Missing webcam path!");
+			System.exit(-1);
+		} else {
+			System.out.println("Webcam Path: " + args[0]);
+			webcamPath = args[0];
+		}
 		// Configure player factory.
 	    String[] VLC_ARGS = {
 	            "--intf", "dummy",          // no interface
@@ -21,21 +34,13 @@ public class WebcamVirus {
 	            "--no-snapshot-preview",    // no blending in dummy vout
 	    };
 	    MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory(VLC_ARGS);
-
-	    // Create player.
 	    HeadlessMediaPlayer mediaPlayer = mediaPlayerFactory.newHeadlessMediaPlayer();
 
-	    // Select input device.
-	    String mrl = "qtcapture://";
-
-	    // Start processing.
-	    if (! mediaPlayer.startMedia(mrl)) {
+	    // Initialize webcam processing
+	    if (! mediaPlayer.startMedia(webcamPath)) {
 	    	System.out.println("Error while starting media player.");
 	    	System.exit(-1);
 	    }
-
-	    // Time to initialize webcam
-	    Thread.sleep(TIME_SLEEP);
 
 	    BufferedImage bufImg = null;
        	File outputfile = new File("saved.png");
