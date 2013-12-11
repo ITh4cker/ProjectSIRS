@@ -54,7 +54,7 @@ public class ARFFPrinter extends Printer {
 
     private boolean isVirus(Container c) {
         for (String pinned : this.pinnedAsVirus) {
-            if (c.getExtraInfo("Name").equals(pinned)) {
+            if (c.getExtraInfo("Name").equals(pinned) || c.getExtraInfo("Pid").equals(pinned)) {
                 return true;
             }
         }
