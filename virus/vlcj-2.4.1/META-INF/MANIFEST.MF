@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Built-By: mark
+Build-Jdk: 1.7.0_25
+Class-Path: vlcj-2.4.1.jar jna-3.5.2.jar platform-3.5.2.jar
+Created-By: Apache Maven 3.0.4
+Main-Class: uk.co.caprica.vlcj.test.basic.TestPlayer
+Archiver-Version: Plexus Archiver
+
