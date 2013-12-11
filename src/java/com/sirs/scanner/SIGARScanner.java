@@ -150,8 +150,7 @@ public class SIGARScanner extends SingleScanner {
             in = new java.util.Scanner(fetch);
             while (in.hasNext()) {
                 try {
-                    in.next("p");
-                    this.processesUsingWebcam.add(in.nextLong());
+                    this.processesUsingWebcam.add(Long.parseLong(in.next().substring(1)));
                 } catch (Exception e) {
                     e.printStackTrace();
                     break;

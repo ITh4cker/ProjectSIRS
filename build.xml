@@ -14,6 +14,7 @@
     <fileset dir="${lib}">
       <include name="*.jar"/>
     </fileset>
+    <pathelement location="${src-java}" />
     <pathelement location="${build}/classes"/>
     <pathelement location="${build}/resources"/>
   </path>
@@ -41,7 +42,8 @@
       fork="yes"
       destdir="${build}/classes"
       optimize="${optimization}"
-      debug="${debug}"
+      debug="true"
+      debuglevel="lines,vars,source"
       deprecation="${deprecation}"
       source="1.6" target="1.6">
 
