@@ -68,7 +68,7 @@
     <java classname="${scanner-run-class}" fork="true">
       <classpath refid="project.class.path"/>
       <sysproperty key="java.library.path" path="${lib}"/>
-      <arg line="-arff STUDENT"/>
+      <arg line="-xml -arff STUDENT"/>
     </java>
   </target>
 

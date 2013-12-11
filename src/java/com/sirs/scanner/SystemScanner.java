@@ -1,6 +1,7 @@
 package com.sirs.scanner;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sirs.scanner.communication.ARFFPrinter;
@@ -18,7 +19,7 @@ public class SystemScanner {
     private static int timesToScan = -1; //negative values means infinite times to scan
 
     private static ScannerManager scanner = null;
-    private static Sender sender = null;
+    private static List<Sender> senders = new ArrayList<Sender>();
 
     private static List<Container> getSystemActivity() {
         return scanner.scan();
@@ -33,26 +34,26 @@ public class SystemScanner {
             if (string.equals(ANALYSER_MODE)) {
                 timesToScan = -1;
                 correctArgs = true;
-                sender = new ToAnalyser();
+                senders.add(new ToAnalyser());
+                student = false;
             } else if (string.equals(STUDENT_MODE)) {
-                timesToScan = 5;
+                timesToScan = 20;
                 correctArgs = true;
                 student = true;
             } else if (string.equals(XML_FLAG)) {
                 xml = true;
-                arff = false;
             } else if (string.equals(ARFF_FLAG)) {
-                xml = false;
                 arff = true;
             }
         }
         if (student && xml) {
-            sender = new ToStudent("test-file.txt", new XMLPrinter());
-        } else if (student && arff) {
-            sender = new ToStudent("test-file.arff", new ARFFPrinter("VirusA", "VirusB", "java"));
+            senders.add(new ToStudent("test-file.xml", new XMLPrinter()));
+        }
+        if (student && arff) {
+            senders.add(new ToStudent("test-file.arff", new ARFFPrinter()));
         }
 
-        if (!correctArgs || sender == null) {
+        if (!correctArgs || senders == null) {
             throw new RuntimeException("Invalid Arguments");
         }
 
@@ -73,15 +74,19 @@ public class SystemScanner {
             System.out.print("Scan #" + times + ": ");
             final List<Container> processes = getSystemActivity();
             System.out.println("scanned " + processes.size() + " elements");
-            sender.send(processes);
-             try {
+            for (Sender sender : senders) {
+                sender.send(processes);
+            }
+            try {
                 Thread.sleep(WAIT_TIME_BETWEEN_SCANS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 return;
             }
         }
-        sender.close();
+        for (Sender sender : senders) {
+            sender.close();
+        }
         System.out.println("Scanner terminated");
     }
 

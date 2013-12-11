@@ -96,11 +96,6 @@ public class SIGARScanner extends SingleScanner {
         }
     }
 
-    //TODO I have no idea what to do
-    private boolean isListeningToKeyboard(long pid) {
-        return false;
-    }
-
     private boolean isRunningAsRoot(long pid) {
         try {
             return this.sigar.getProcCredName(pid).getUser().equals("root");
@@ -183,58 +178,59 @@ public class SIGARScanner extends SingleScanner {
     public List<Container> scan() {
         List<Container> result = new ArrayList<Container>();
 
-        //load my system scan
-        load();
+        try {
+            //load my system scan
+            load();
 
-        long[] pids = getPids();
-        for (long pid : pids) {
-            try {
-                Container c = new Container("" + pid);
-                c.addExtraInfo("Name", this.sigar.getProcState(pid).getName());
-                c.addExtraInfo("Pid", Long.toString(pid));
-//                c.addExtraInfo("USER", this.sigar.getProcCredName(pid).getUser());
-//                c.addExtraInfo("EXE Name", this.sigar.getProcExe(pid).getName());
-//                c.addExtraInfo("EXE CWD", this.sigar.getProcExe(pid).getCwd());
-                c.addExtraInfo("Description", ProcUtil.getDescription(this.sigar, pid));
+            long[] pids = getPids();
+            for (long pid : pids) {
+                try {
+                    Container c = new Container("" + pid);
+                    c.addExtraInfo("Name", this.sigar.getProcState(pid).getName());
+                    c.addExtraInfo("Pid", Long.toString(pid));
+                    c.addExtraInfo("USER", this.sigar.getProcCredName(pid).getUser());
+//                  c.addExtraInfo("EXE Name", this.sigar.getProcExe(pid).getName());
+//                  c.addExtraInfo("EXE CWD", this.sigar.getProcExe(pid).getCwd());
+                    c.addExtraInfo("Description", ProcUtil.getDescription(this.sigar, pid));
 
-                //process state
-                c.addResource(new Resource("Nice", this.sigar.getProcState(pid).getNice()));
-                c.addResource(new Resource("Priority", this.sigar.getProcState(pid).getPriority()));
-                c.addResource(new Resource("Processor", this.sigar.getProcState(pid).getProcessor()));
-                c.addResource(new Resource("Threads", this.sigar.getProcState(pid).getThreads()));
-                c.addResource(new Resource("Tty", this.sigar.getProcState(pid).getTty()));
-                c.addResource(new Resource("State", this.sigar.getProcState(pid).getState()));
+                    //process state
+                    c.addResource(new Resource("Nice", this.sigar.getProcState(pid).getNice()));
+                    c.addResource(new Resource("Priority", this.sigar.getProcState(pid).getPriority()));
+                    c.addResource(new Resource("Processor", this.sigar.getProcState(pid).getProcessor()));
+                    c.addResource(new Resource("Threads", this.sigar.getProcState(pid).getThreads()));
+                    c.addResource(new Resource("Tty", this.sigar.getProcState(pid).getTty()));
+                    c.addResource(new Resource("State", this.sigar.getProcState(pid).getState()));
 
-                //CPU
-                c.addResource(new Resource("CPU_usage", this.procCPU.get(pid)));
-                c.addResource(new Resource("CPU_idle", this.sigar.getCpuPerc().getIdle() * 100));
+                    //CPU
+                    c.addResource(new Resource("CPU_usage", this.procCPU.get(pid)));
+                    c.addResource(new Resource("CPU_idle", this.sigar.getCpuPerc().getIdle() * 100));
 
-                //TIME
-                c.addResource(new Resource("TIME_total", this.sigar.getProcTime(pid).getTotal()));
-                c.addResource(new Resource("TIME_user", this.sigar.getProcTime(pid).getUser()));
-                c.addResource(new Resource("TIME_sys", this.sigar.getProcTime(pid).getSys()));
+                    //TIME
+                    c.addResource(new Resource("TIME_total", this.sigar.getProcTime(pid).getTotal()));
+                    c.addResource(new Resource("TIME_user", this.sigar.getProcTime(pid).getUser()));
+                    c.addResource(new Resource("TIME_sys", this.sigar.getProcTime(pid).getSys()));
 
-                //MEM
-                c.addResource(new Resource("MEM_Size", this.sigar.getProcMem(pid).getSize()));
-                c.addResource(new Resource("MEM_Resident", this.sigar.getProcMem(pid).getResident()));
-                c.addResource(new Resource("MEM_Share", this.sigar.getProcMem(pid).getShare()));
-                c.addResource(new Resource("MEM_Available", this.sigar.getMem().getActualFree()));
-                c.addResource(new Resource("MEM_Used", this.sigar.getMem().getActualUsed()));
+                    //MEM
+                    c.addResource(new Resource("MEM_Size", this.sigar.getProcMem(pid).getSize()));
+                    c.addResource(new Resource("MEM_Resident", this.sigar.getProcMem(pid).getResident()));
+                    c.addResource(new Resource("MEM_Share", this.sigar.getProcMem(pid).getShare()));
+                    c.addResource(new Resource("MEM_Available", this.sigar.getMem().getActualFree()));
+                    c.addResource(new Resource("MEM_Used", this.sigar.getMem().getActualUsed()));
 
-                //booleans
-                c.addResource(new Resource("Root?", isRunningAsRoot(pid)));
-                c.addResource(new Resource("Known?", isKnownProcess(pid)));
-                c.addResource(new Resource("Webcam?", isUsingWebcam(pid)));
-                c.addResource(new Resource("Internet?", isUsingInternet(pid, getProcessesUsingInternet())));
-                c.addResource(new Resource("Listening?", isListeningToKeyboard(pid)));
+                    //booleans
+                    c.addResource(new Resource("Root?", isRunningAsRoot(pid)));
+                    c.addResource(new Resource("Known?", isKnownProcess(pid)));
+                    c.addResource(new Resource("Webcam?", isUsingWebcam(pid)));
+                    c.addResource(new Resource("Internet?", isUsingInternet(pid, getProcessesUsingInternet())));
 
-                //Add Container to result
-                result.add(c);
-            } catch (SigarException e) {
-                e.printStackTrace();
-            } catch (Exception e){
-            	e.printStackTrace();
+                    //Add Container to result
+                    result.add(c);
+                } catch (SigarException e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return result;
