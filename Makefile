@@ -6,7 +6,7 @@ ODIR = build
 LDIR = lib
 LOUT = libsystemscan.so
 CC = gcc
-INC = -I/usr/local/java/include -I/usr/local/java/include/genunix -I/usr/lib/jvm/oracle-jdk-7/include/ -I/usr/lib/jvm/oracle-jdk-7/include/linux -fPIC
+INC = -I/usr/local/java/include -I/usr/local/java/include/genunix -I$(JAVA_HOME)/include/ -I$(JAVA_HOME)/include/linux -fPIC
 
 all: header compile library
 
