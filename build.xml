@@ -7,8 +7,8 @@
   <property name="build" value="build"/>
   <property name="scanner-run-class" value="com.sirs.scanner.SystemScanner"/>
   <property name="analyser-run-class" value="com.sirs.analyser.SystemAnalyser"/>
-  <property name="classifier" value="weka.classifiers.functions.Logistic"/>
-  <property name="model-file" value="logistic.model" />
+  <property name="classifier" value="weka.classifiers.functions.MultilayerPerceptron"/>
+  <property name="model-file" value="neural.model" />
 
   <!-- general classpath definition, incl. CLASSPATH env. variable,
    // but jars in lib directory have precedence over the CLASSPATH variable -->
