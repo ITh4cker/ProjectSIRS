@@ -5,7 +5,10 @@
   <property name="src-java" value="${src}/java"/>
   <property name="lib" value="lib" />
   <property name="build" value="build"/>
-  <property name="run-class" value="com.sirs.scanner.SystemScanner"/>
+  <property name="scanner-run-class" value="com.sirs.scanner.SystemScanner"/>
+  <property name="analyser-run-class" value="com.sirs.analyser.SystemAnalyser"/>
+  <property name="classifier" value="weka.classifiers.functions.MultilayerPerceptron"/>
+  <property name="model-file" value="neural.model" />
 
   <!-- general classpath definition, incl. CLASSPATH env. variable,
    // but jars in lib directory have precedence over the CLASSPATH variable -->
@@ -13,6 +16,7 @@
     <fileset dir="${lib}">
       <include name="*.jar"/>
     </fileset>
+    <pathelement location="${src-java}" />
     <pathelement location="${build}/classes"/>
     <pathelement location="${build}/resources"/>
   </path>
@@ -40,9 +44,10 @@
       fork="yes"
       destdir="${build}/classes"
       optimize="${optimization}"
-      debug="${debug}"
+      debug="true"
+      debuglevel="lines,vars,source"
       deprecation="${deprecation}"
-      source="1.7" target="1.7">
+      source="1.6" target="1.6">
 
       <classpath refid="project.class.path" /> 
     </javac>
@@ -64,15 +69,21 @@
 
 <!-- Run -->
   <target name="run-student" depends="build">
-    <java classname="${run-class}" fork="true">
+    <java classname="${scanner-run-class}" fork="true">
       <classpath refid="project.class.path"/>
       <sysproperty key="java.library.path" path="${lib}"/>
-      <arg line="-arff STUDENT"/>
+      <arg line="-xml -arff STUDENT"/>
     </java>
   </target>
 
   <target name="run-analyser" depends="build">
-    <java classname="${run-class}" fork="true">
+    <java classname="${analyser-run-class}" fork="true">
+      <classpath refid="project.class.path"/>
+    </java>
+  </target>
+
+  <target name="run-scanner" depends="build">
+    <java classname="${scanner-run-class}" fork="true">
       <classpath refid="project.class.path"/>
       <sysproperty key="java.library.path" path="${lib}"/>
       <arg line="ANALYSER"/>
@@ -86,5 +97,12 @@
       <arg line="clean"/>
     </exec>
     <delete dir="${build}"/>
+  </target>
+
+  <target name="create-model">
+  	<java classname="${classifier}" fork="true">
+  		<classpath refid="project.class.path"/>
+  		<arg line="-t ${src}/resources/base-learn.arff -d ${src}/resources/${model-file}" />
+  	</java>
   </target>
 </project>
