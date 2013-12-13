@@ -1,12 +1,9 @@
-# Creates N processes that will run a infinite cycle
-N=20
+#!/bin/bash
+loop_func {
+	while [ true ]
+	do
+		echo "banana" > /dev/null
+	done
+}
 
-for i in 1 .. N
-do
-	fork
-done
-
-while [ true ]
-do
-	;
-done
+loop_func &
