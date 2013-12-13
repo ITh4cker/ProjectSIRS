@@ -6,4 +6,4 @@ loop_func {
 	done
 }
 
-loop_func &
+loop_func() &
